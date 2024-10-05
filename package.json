@@ -1,10 +1,11 @@
 {
   "name": "peek-a-reilly",
+  "type": "module",
   "version": "1.0.0",
   "description": "Tool to open random book at random chapter from learning.oreilly.com",
   "main": "index.js",
   "scripts": {
-    "peek": "node ./src/peek.js",
+    "peek": "node --env-file=.env ./src/peek.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
