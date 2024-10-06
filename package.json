@@ -1,16 +1,12 @@
 {
   "name": "peek-a-reilly",
-  "type": "module",
   "version": "1.0.0",
   "description": "Tool to open random book at random chapter from learning.oreilly.com",
   "main": "index.js",
-  "scripts": {
-    "start": "http-server ./src -c-1"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "http-server": "^14.1.1"
   }
 }
