@@ -1,3 +1,5 @@
+import { Collection } from "../src/peek";
+
 export default [
   {
     id: "36db9185-7107-4f8b-8eeb-d1075d82559a",
@@ -1152,4 +1154,4 @@ export default [
       id: "00000000-0000-0000-0000-000000000204",
     },
   },
-];
+] as Collection[];
