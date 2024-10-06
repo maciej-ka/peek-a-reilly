@@ -5,14 +5,17 @@
   "description": "Tool to open random book at random chapter from learning.oreilly.com",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf ./dist && tsc",
     "peek": "node --env-file=.env ./src/peek.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "playground": "http-server ./dist/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.7.4",
+    "http-server": "^14.1.1",
     "typescript": "^5.6.2",
     "vitest": "^2.1.2"
   }
