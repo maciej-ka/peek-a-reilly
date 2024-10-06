@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Peek-A-Reilly",
+  "version": "1.0",
+  "description": "Open a random chapter from your O'Reilly collection when 'r' is pressed.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "https://learning.oreilly.com/*"
+  ],
+  "host_permissions": [
+    "https://learning.oreilly.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://learning.oreilly.com/*"],
+      "js": ["peek.js"]
+    }
+  ]
+}
