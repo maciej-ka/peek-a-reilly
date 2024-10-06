@@ -1,9 +1,11 @@
-console.log("peek a reilly, v9")
+console.log("peek a reilly, v10")
 
 const rand = (array) => {
   const i = Math.floor(Math.random() * array.length);
   return array[i];
 };
+
+const peekSection = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
 
 const peekChapter = async (path) => {
   const res = await fetch(`https://learning.oreilly.com${path}`);
@@ -30,6 +32,17 @@ document.addEventListener('keydown', (event) => {
     !event.shiftKey
   ) {
     peekBook();
+  }
+
+  if (
+    location.pathname.startsWith('/library/view/') &&
+    event.key === 's' &&
+    !event.altKey &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.shiftKey
+  ) {
+    peekSection();
   }
 });
 
