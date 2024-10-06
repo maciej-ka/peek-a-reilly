@@ -15,7 +15,7 @@ const peekChapter = async (path) => {
   const res = await fetch(`https://learning.oreilly.com${path}`);
   const json = await res.json();
   const url = json.web_url;
-  const chapter = rand(json.chapters).split('/').pop()
+  const chapter = rand(json.chapters).split('/chapter/').pop()
   console.log(url+chapter);
 }
 

@@ -1,4 +1,4 @@
-console.log("peek a reilly, v8")
+console.log("peek a reilly, v9")
 
 const rand = (array) => {
   const i = Math.floor(Math.random() * array.length);
@@ -11,7 +11,7 @@ const peekChapter = async (path) => {
   const res = await fetch(`https://learning.oreilly.com${path}`);
   const json = await res.json();
   const url = json.web_url;
-  const chapter = rand(json.chapters).split('/').pop()
+  const chapter = rand(json.chapters).split('/chapter/').pop()
   console.log(url+chapter);
 }
 
