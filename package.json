@@ -5,7 +5,7 @@
   "description": "Tool to open random book at random chapter from learning.oreilly.com",
   "main": "index.js",
   "scripts": {
-    "start": "http-server ./src"
+    "start": "http-server ./src -c-1"
   },
   "keywords": [],
   "author": "",
