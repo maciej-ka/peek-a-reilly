@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Peek-A-Reilly",
-  "version": "0.14.0",
+  "version": "0.14.4",
   "description": "Open a random chapter from your O'Reilly collection when 'r' is pressed.",
   "permissions": [
     "activeTab",

@@ -3,10 +3,17 @@ const rand = (array) => {
   return array[i];
 };
 
-const pageIsReader = () => location.pathname.startsWith('/library/view/');
-const pageIsSearch = () => location.pathname === '/search/'
-const pageIsCollection = () => location.pathname.match(/\/playlists\/([^\/]*)/)?.[1]
-const getCollectionId = pageIsCollection;
+const collectionRegExp = /\/playlists\/([^\/]+)/;
+
+const getPageType = () => {
+  const path = location.pathname
+  if (path.startsWith('/library/view/')) return 'reader'
+  if (path.startsWith('/search/')) return 'search'
+  if (path.match(collectionRegExp)) return 'collection'
+  return 'other'
+}
+
+const getCollectionId = () => location.pathname.match(collectionRegExp)?.[1]
 
 const fetchJson = (path) => fetch(`https://learning.oreilly.com${path}`).then(x => x.json());
 
@@ -34,18 +41,13 @@ const getLastBookPaths = () => JSON.parse(localStorage.getItem("lastBookPaths"))
 const setLastBookPaths = (bookPaths) => localStorage.setItem("lastBookPaths", JSON.stringify(bookPaths));
 
 const getBookPaths = async () => {
-  let result = [];
-  // book list depends on current page
-  if (pageIsReader() && getLastBookPaths()) {
-    result = getLastBookPaths();
-  } else if (pageIsSearch()) {
-    result = await getSearchBooks()
-    await getSearchBooks()
-  } else if (pageIsCollection()) {
-    result = await getCollectionBooks(c => c.id === getCollectionId())
-  } else {
-    result = await getCollectionBooks()
+  const sources = {
+    reader: getLastBookPaths,
+    search: getSearchBooks,
+    collection: () => getCollectionBooks(c => c.id === getCollectionId()),
+    other: getCollectionBooks
   }
+  const result = await sources[getPageType()]();
   setLastBookPaths(result);
   return result;
 }
@@ -69,7 +71,7 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (
-    pageIsReader() &&
+    getPageType() === 'reader' &&
     event.key === 's' &&
     !event.altKey &&
     !event.ctrlKey &&
