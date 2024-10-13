@@ -3,55 +3,49 @@ const rand = (array) => {
   return array[i];
 };
 
-const getCollectionId = () => {
-  const split = location.pathname.split('/')
-  return split[1] === 'playlists'
-    ? split[2]
-    : false
-}
+const pageIsReader = () => location.pathname.startsWith('/library/view/');
+const pageIsCollection = () => location.pathname.match(/\/playlists\/([^\/]*)/)?.[1]
+const getCollectionId = pageIsCollection;
 
-const peekScroll = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
+const fetchJson = (path) => fetch(`https://learning.oreilly.com${path}`).then(x => x.json());
 
-const peekChapterUrl = async (path) => {
-  const res = await fetch(`https://learning.oreilly.com${path}`);
-  const json = await res.json();
-  const url = json.web_url;
-  const chapter = rand(json.chapters).split('/chapter/').pop();
-  return url + chapter;
+const peekChapterUrl = async (bookPath) => {
+  const res = await fetchJson(bookPath);
+  const chapter = rand(res.chapters).split('/chapter/').pop();
+  return res.web_url + chapter;
 };
 
-const getPathsFromCollections = async () => {
-  const res = await fetch("https://learning.oreilly.com/api/v3/collections/");
-  let json = await res.json();
+const getCollectionPaths = async (filterCollections = Boolean) => {
+  const res = await fetchJson("/api/v3/collections/");
+  const collections = res.filter(filterCollections);
   const filterSections = (entries) => entries.filter(({ content_type }) => content_type !== 'SECTION')
   const parseBooks = (collection) => filterSections(collection.content).map(b => b.api_url);
-
-  const collectionId = getCollectionId()
-  if (collectionId) {
-    json = json.filter(({ id }) => collectionId === id)
-  }
-
-  return json.reduce((acc, c) => [...acc, ...parseBooks(c)], []);
+  return collections.reduce((acc, col) => [...acc, ...parseBooks(col)], []);
 };
 
 const getLastBookPaths = () => JSON.parse(localStorage.getItem("lastBookPaths"));
 const setLastBookPaths = (bookPaths) => localStorage.setItem("lastBookPaths", JSON.stringify(bookPaths));
 
 const getBookPaths = async () => {
-  const lastBookPaths = getLastBookPaths();
-  const pageIsReader = location.pathname.startsWith('/library/view/');
-  if (pageIsReader && lastBookPaths) {
-    return lastBookPaths;
+  let result = [];
+  // book list depends on current page
+  if (pageIsReader() && getLastBookPaths()) {
+    result = getLastBookPaths();
+  } else if (pageIsCollection()) {
+    result = await getCollectionPaths(c => c.id === getCollectionId())
+  } else {
+    result = await getCollectionPaths()
   }
-  const result = await getPathsFromCollections()
   setLastBookPaths(result);
   return result;
 }
 
 const peekBook = async () => {
-  const paths = await getBookPaths();
-  window.location.href = await peekChapterUrl(rand(paths));
+  const bookPaths = await getBookPaths();
+  window.location.href = await peekChapterUrl(rand(bookPaths));
 };
+
+const peekScroll = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
 
 document.addEventListener('keydown', (event) => {
   if (
@@ -65,7 +59,7 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (
-    location.pathname.startsWith('/library/view/') &&
+    pageIsReader() &&
     event.key === 's' &&
     !event.altKey &&
     !event.ctrlKey &&
