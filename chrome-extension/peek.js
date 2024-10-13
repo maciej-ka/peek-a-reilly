@@ -4,9 +4,11 @@ const rand = (array) => {
 };
 
 const collectionRegExp = /\/playlists\/([^\/]+)/;
+const bookRegExp = /\/library\/view\/[^\/]+\/([^\/]+)\/$/;
 
 const getPageType = () => {
   const path = location.pathname
+  if (path.match(bookRegExp)) return 'book'
   if (path.startsWith('/library/view/')) return 'reader'
   if (path.startsWith('/search/')) return 'search'
   if (path.match(collectionRegExp)) return 'collection'
@@ -14,6 +16,7 @@ const getPageType = () => {
 }
 
 const getCollectionId = () => location.pathname.match(collectionRegExp)?.[1]
+const getBookId = () => location.pathname.match(bookRegExp)?.[1]
 
 const fetchJson = (path) => fetch(`https://learning.oreilly.com${path}`).then(x => x.json());
 
@@ -42,6 +45,7 @@ const setLastBookPaths = (bookPaths) => localStorage.setItem("lastBookPaths", JS
 
 const getBookPaths = async () => {
   const sources = {
+    book: () => [`/api/v1/book/${getBookId()}`],
     reader: getLastBookPaths,
     search: getSearchBooks,
     collection: () => getCollectionBooks(c => c.id === getCollectionId()),
