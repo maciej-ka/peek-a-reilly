@@ -1,4 +1,4 @@
-console.log("peek a reilly, v0.11.0")
+console.log("peek a reilly, v0.12.0")
 
 const rand = (array) => {
   const i = Math.floor(Math.random() * array.length);
@@ -25,7 +25,8 @@ const peekChapter = async (path) => {
 const peekBook = async () => {
   const res = await fetch("https://learning.oreilly.com/api/v3/collections/");
   let json = await res.json();
-  const parseBooks = (collection) => collection.content.map(b => b.api_url);
+  const filterSections = (entries) => entries.filter(({ content_type }) => content_type !== 'SECTION')
+  const parseBooks = (collection) => filterSections(collection.content).map(b => b.api_url);
 
   const collectionId = getCollectionId()
   if (collectionId) {
