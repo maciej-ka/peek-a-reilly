@@ -12,12 +12,12 @@ const getCollectionId = () => {
 
 const peekScroll = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
 
-const peekChapter = async (path) => {
+const peekChapterUrl = async (path) => {
   const res = await fetch(`https://learning.oreilly.com${path}`);
   const json = await res.json();
   const url = json.web_url;
   const chapter = rand(json.chapters).split('/chapter/').pop();
-  window.location.href = url + chapter;
+  return url + chapter;
 };
 
 const getPathsFromCollections = async () => {
@@ -50,7 +50,7 @@ const getBookPaths = async () => {
 
 const peekBook = async () => {
   const paths = await getBookPaths();
-  peekChapter(rand(paths));
+  window.location.href = await peekChapterUrl(rand(paths));
 };
 
 document.addEventListener('keydown', (event) => {
