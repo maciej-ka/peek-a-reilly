@@ -1,5 +1,3 @@
-console.log("peek a reilly, v0.12.0")
-
 const rand = (array) => {
   const i = Math.floor(Math.random() * array.length);
   return array[i];
