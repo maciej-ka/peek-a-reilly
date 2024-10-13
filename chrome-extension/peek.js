@@ -4,6 +4,7 @@ const rand = (array) => {
 };
 
 const pageIsReader = () => location.pathname.startsWith('/library/view/');
+const pageIsSearch = () => location.pathname === '/search/'
 const pageIsCollection = () => location.pathname.match(/\/playlists\/([^\/]*)/)?.[1]
 const getCollectionId = pageIsCollection;
 
@@ -15,7 +16,13 @@ const peekChapterUrl = async (bookPath) => {
   return res.web_url + chapter;
 };
 
-const getCollectionPaths = async (filterCollections = Boolean) => {
+const getSearchBooks = async () => {
+  const stdOptions = 'tzOffset=-2&aia_only=false&feature_flags=improveSearchFilters&report=true&isTopics=false';
+  res = await fetchJson(`/search/api/search/${location.search}&${stdOptions}`);
+  return res.data.products.map(({ product_id }) => `/api/v1/book/${product_id}`)
+}
+
+const getCollectionBooks = async (filterCollections = Boolean) => {
   const res = await fetchJson("/api/v3/collections/");
   const collections = res.filter(filterCollections);
   const filterSections = (entries) => entries.filter(({ content_type }) => content_type !== 'SECTION')
@@ -31,10 +38,13 @@ const getBookPaths = async () => {
   // book list depends on current page
   if (pageIsReader() && getLastBookPaths()) {
     result = getLastBookPaths();
+  } else if (pageIsSearch()) {
+    result = await getSearchBooks()
+    await getSearchBooks()
   } else if (pageIsCollection()) {
-    result = await getCollectionPaths(c => c.id === getCollectionId())
+    result = await getCollectionBooks(c => c.id === getCollectionId())
   } else {
-    result = await getCollectionPaths()
+    result = await getCollectionBooks()
   }
   setLastBookPaths(result);
   return result;
