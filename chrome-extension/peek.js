@@ -10,7 +10,7 @@ const getCollectionId = () => {
     : false
 }
 
-const peekSection = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
+const peekScroll = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
 
 const peekChapter = async (path) => {
   const res = await fetch(`https://learning.oreilly.com${path}`);
@@ -54,7 +54,7 @@ document.addEventListener('keydown', (event) => {
     !event.metaKey &&
     !event.shiftKey
   ) {
-    peekSection();
+    peekScroll();
   }
 });
 
