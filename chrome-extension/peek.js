@@ -20,7 +20,7 @@ const peekChapter = async (path) => {
   window.location.href = url + chapter;
 };
 
-const getCollectionPaths = async () => {
+const getPathsFromCollections = async () => {
   const res = await fetch("https://learning.oreilly.com/api/v3/collections/");
   let json = await res.json();
   const filterSections = (entries) => entries.filter(({ content_type }) => content_type !== 'SECTION')
@@ -34,8 +34,22 @@ const getCollectionPaths = async () => {
   return json.reduce((acc, c) => [...acc, ...parseBooks(c)], []);
 };
 
+const getLastBookPaths = () => JSON.parse(localStorage.getItem("lastBookPaths"));
+const setLastBookPaths = (bookPaths) => localStorage.setItem("lastBookPaths", JSON.stringify(bookPaths));
+
+const getBookPaths = async () => {
+  const lastBookPaths = getLastBookPaths();
+  const pageIsReader = location.pathname.startsWith('/library/view/');
+  if (pageIsReader && lastBookPaths) {
+    return lastBookPaths;
+  }
+  const result = await getPathsFromCollections()
+  setLastBookPaths(result);
+  return result;
+}
+
 const peekBook = async () => {
-  const paths = await getCollectionPaths()
+  const paths = await getBookPaths();
   peekChapter(rand(paths));
 };
 
