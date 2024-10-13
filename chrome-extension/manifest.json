@@ -6,8 +6,7 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "storage",
-    "https://learning.oreilly.com/*"
+    "storage"
   ],
   "host_permissions": [
     "https://learning.oreilly.com/*"
