@@ -1,9 +1,16 @@
-console.log("peek a reilly, v10")
+console.log("peek a reilly, v0.11.0")
 
 const rand = (array) => {
   const i = Math.floor(Math.random() * array.length);
   return array[i];
 };
+
+const getCollectionId = () => {
+  const split = location.pathname.split('/')
+  return split[1] === 'playlists'
+    ? split[2]
+    : false
+}
 
 const peekSection = () => window.scrollTo(0, document.body.offsetHeight * Math.random())
 
@@ -17,8 +24,14 @@ const peekChapter = async (path) => {
 
 const peekBook = async () => {
   const res = await fetch("https://learning.oreilly.com/api/v3/collections/");
-  const json = await res.json();
+  let json = await res.json();
   const parseBooks = (collection) => collection.content.map(b => b.api_url);
+
+  const collectionId = getCollectionId()
+  if (collectionId) {
+    json = json.filter(({ id }) => collectionId === id)
+  }
+
   const paths = json.reduce((acc, c) => [...acc, ...parseBooks(c)], []);
   peekChapter(rand(paths));
 };
