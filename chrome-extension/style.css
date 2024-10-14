@@ -1,3 +1,4 @@
-#book-content #sbo-rt-content ul li {
+#book-content #sbo-rt-content ul li,
+#book-content #sbo-rt-content ol li {
   color: unset;
 }
